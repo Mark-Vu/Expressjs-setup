@@ -18,18 +18,19 @@ npm install -D typescript ts-node-dev @types/express @types/cors @types/node dot
 ```
 
 ### In package.json:
-```
+```json
 "scripts": {
-    ...
-    "build": "tsc"
-},
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "nodemon src/index.ts"
+  },
 ```
 ### Then run:
 ```
 npx tsc --init
 ```
 ### Create tsconfig.json, paste this in:
-```
+```json
 {
   "compilerOptions": {
     "module": "NodeNext",
@@ -49,3 +50,34 @@ cd src
 ```
 
 ### Create index.ts under src folder:
+```javascript
+import express, { Express, Request, Response , Application } from 'express';
+import userRouter from './user/routes';
+
+const app: Application = express();
+const port = process.env.PORT || 8000;
+
+
+app.use('/user', userRouter);
+
+app.get('/', (req: Request, res: Response) => {
+  res.send('Welcome to JobHub');
+});
+
+app.listen(port, () => {
+  console.log(`Server is running at http://localhost:${port}`);
+});
+```
+
+### Create folder "user" and inside /user/routes.ts:
+```javascript
+import express, { Request, Response, Router } from 'express';
+
+const userRouter: Router = express.Router();
+
+userRouter.get('/users', (req: Request, res: Response) => {
+  res.send('This is user route');
+});
+
+export default userRouter;
+```
